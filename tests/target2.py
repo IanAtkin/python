@@ -1,5 +1,3 @@
-#!/usr/bin/python3.6
-
 # write a function with the following input: an array of integers and a number 'target'
 # find all the pairs that sum equals to the input number 'target'
 # output is a list of pairs (number_a, number_b)
