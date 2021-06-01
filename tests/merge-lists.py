@@ -1,5 +1,3 @@
-#!/usr/bin/python3
-
 def merge_lists(list1, list2):
   merged_list = []
   counter = 0
