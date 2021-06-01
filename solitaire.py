@@ -1,26 +1,14 @@
 #! /usr/bin/env python
 
-"""Solitaire game, much like the one that comes with MS Windows.
-
-Limitations:
-
-- No cute graphical images for the playing cards faces or backs.
-- No scoring or timer.
-- No undo.
-- No option to turn 3 cards at a time.
-- No keyboard shortcuts.
-- Less fancy animation when you win.
-- The determination of which stack you drag to is more relaxed.
-
-Apology:
-
-I'm not much of a card player, so my terminology in these comments may
-at times be a little unusual.  If you have suggestions, please let me
-know!
-
 """
+Solitaire
 
-# Imports
+To do...
+
+- Create proper playing card graphics
+- Add a score
+- Undo?
+"""
 
 import math
 import random
@@ -34,7 +22,7 @@ from Canvas import Rectangle, CanvasText, Group, Window
 # the source, we fix it here by deriving a subclass:
 
 class Group(Group):
-    def bind(self, sequence=None, command=None):
+    def bind(self, sequence = None, command = None):
         return self.canvas.tag_bind(self.id, sequence, command)
 
 
@@ -115,11 +103,10 @@ NROWS = 7
 
 class Card:
 
-    """A playing card.
-
+    """
     A card doesn't record to which stack it belongs; only the stack
     records this (it turns out that we always know this from the
-    context, and this saves a ``double update'' with potential for
+    context, and this saves a double update with potential for
     inconsistencies).
 
     Public methods:
@@ -147,18 +134,17 @@ class Card:
     (To show the card face up, the text item is placed in front of
     rect and the back is placed behind it.  To show it face down, this
     is reversed.  The card is created face down.)
-
     """
 
     def __init__(self, suit, value, canvas):
-        """Card constructor.
+        """
+        Card constructor
 
         Arguments are the card's suit and value, and the canvas widget.
 
         The card is created at position (0, 0), with its face down
         (adding it to a stack will position it according to that
         stack's rules).
-
         """
         self.suit = suit
         self.value = value
@@ -182,33 +168,33 @@ class Card:
                               outline='black', fill='grey')
         self.group.addtag_withtag(self.__back)
 
+    # Debug print statements
     def __repr__(self):
-        """Return a string for debug print statements."""
         return "Card(%r, %r)" % (self.suit, self.value)
 
+    # Move the card to absolute position (x, y)
     def moveto(self, x, y):
-        """Move the card to absolute position (x, y)."""
         self.moveby(x - self.x, y - self.y)
 
+    # Move the card by (dx, dy)
     def moveby(self, dx, dy):
-        """Move the card by (dx, dy)."""
         self.x = self.x + dx
         self.y = self.y + dy
         self.group.move(dx, dy)
 
     def tkraise(self):
-        """Raise the card above all other objects in its canvas."""
+        # Raise the card above all other objects in its canvas
         self.group.tkraise()
 
+    # Turn the card up
     def showface(self):
-        """Turn the card's face up."""
         self.tkraise()
         self.__rect.tkraise()
         self.__text.tkraise()
         self.face_shown = 1
 
+    # Turn the card down
     def showback(self):
-        """Turn the card's face down."""
         self.tkraise()
         self.__rect.tkraise()
         self.__back.tkraise()
@@ -217,7 +203,8 @@ class Card:
 
 class Stack:
 
-    """A generic stack of cards.
+    """
+    Stack of cards
 
     This is used as a base class for all other stacks (e.g. the deck,
     the suit stacks, and the row stacks).
@@ -259,17 +246,16 @@ class Stack:
 
     startmoving(event) -- begin a move operation
     finishmoving() -- finish a move operation
-
     """
 
     def __init__(self, x, y, game=None):
-        """Stack constructor.
+        """
+        Stack constructor
 
         Arguments are the stack's nominal x and y position (the top
         left corner of the first card placed in the stack), and the
         game object (which is used to get the canvas; subclasses use
         the game object to find other stacks).
-
         """
         self.x = x
         self.y = y
@@ -285,8 +271,8 @@ class Stack:
     def makebottom(self):
         pass
 
+    # Debug print statements
     def __repr__(self):
-        """Return a string for debug print statements."""
         return "%s(%d, %d)" % (self.__class__.__name__, self.x, self.y)
 
     # Public methods
@@ -387,9 +373,10 @@ class Stack:
 
 class Deck(Stack):
 
-    """The deck is a stack with support for shuffling.
+    """
+    Deck: A stack with support for shuffling
 
-    New methods:
+    Added methods:
 
     fill() -- create the playing cards
     shuffle() -- shuffle the playing cards
@@ -397,7 +384,6 @@ class Deck(Stack):
     A single click moves the top card to the game's open deck and
     moves it face up; if we're out of cards, it moves the open deck
     back to the deck.
-
     """
 
     def makebottom(self):
@@ -437,7 +423,6 @@ class Deck(Stack):
 
 
 def randperm(n):
-    """Function returning a random permutation of range(n)."""
     r = range(n)
     x = []
     while r:
@@ -581,7 +566,6 @@ class Solitaire:
         self.deal()
 
     def win(self):
-        """Stupid animation when you win."""
         cards = []
         for s in self.openstacks:
             cards = cards + s.cards
@@ -628,7 +612,7 @@ class Solitaire:
                 card.showback()
 
 
-# Main function, run when invoked as a stand-alone Python program.
+# Main function; type ./solitaire.py to run
 
 def main():
     root = Tk()
